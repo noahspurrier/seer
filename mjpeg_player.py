@@ -52,8 +52,9 @@ import glob
 import sys
 import logging
 import cgi
+import urllib
 
-def render_main_page (submit_src, image_file_dir, max_FPS, start_at):
+def render_main_page (submit_src, image_file_dir, max_FPS, start_at, start_at_index, start_at_time_quote_plus, start_at_time):
     return """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,7 +89,7 @@ a:hover
 <caption>MJPEG Player</caption>
 <tbody>
 <tr>
-    <td colspan="10" style="background: black"><img src="%(submit_src)s?stream=1&image_file_dir=%(image_file_dir)s&start_at=%(start_at)s" alt="MJPEG container" id="mjpeg_container" width="640" height="360"></td>
+    <td colspan="10" style="background: black"><img src="%(submit_src)s?stream=1&image_file_dir=%(image_file_dir)s&max_FPS=%(max_FPS)d&start_at=%(start_at)d&start_at_index=%(start_at_index)d&start_at_time=%(start_at_time_quote_plus)s" alt="MJPEG container" id="mjpeg_container" width="640" height="360"></td>
 </tr>
 <tr>
     <td><input type="submit" name="start_at" value="0"></td>
@@ -103,13 +104,12 @@ a:hover
     <td><input type="submit" name="start_at" value="90"></td>
 </tr>
 <tr>
-    <td><input type="submit" name="play"></td>
-    <td colspan="8"><input type="text" size="60" name="image_file_dir" value="%(image_file_dir)s"></td>
-    <td>FPS:<input type="text" size="3" name="max_FPS" value="%(max_FPS)s"></td>
+    <td colspan="8"><input type="submit" name="play" value="Load Directory"><input type="text" size="60" name="image_file_dir" value="%(image_file_dir)s"></td>
+    <td><input type="submit" name="max_FPS_submit" value="FPS"><input type="text" size="4" name="max_FPS" value="%(max_FPS)d"></td>
 </tr>
 <tr>
-    <td colspan="5"><input type="submit" name="start_at_index_submit" value="Start at Index"><input type="text" size="10" name="start_at_index" value="-1"></td>
-    <td colspan="5"><input type="submit" name="start_at_date_submit" value="Start at Date"><input type="text" size="20" name="start_at_time" value="2019/03/31 13:21"></td>
+    <td colspan="5"><input type="submit" name="start_at_index_submit" value="Start at Index"><input type="text" size="10" name="start_at_index" value="%(start_at_index)d"></td>
+    <td colspan="5"><input type="submit" name="start_at_time_submit" value="Start at Time"><input type="text" size="20" name="start_at_time" value="%(start_at_time)s"></td>
 </tr>
 </tbody>
 </table>
@@ -123,11 +123,19 @@ if __name__ == "__main__":
 # rc,img = capture.read()
 # image_file_contents=cv2.imencode('.jpg', img)[1].tostring()
 
-    logging.basicConfig(level=logging.DEBUG, filename='app.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.DEBUG, filename='mjpeg_player.py.log', filemode='a', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 #    sys.stdout = codecs.getwriter('utf8')(sys.stdout.buffer)
 
     form = cgi.FieldStorage()
+    try:
+        start_at_index = int(form.getvalue('start_at_index','-1'))
+    except:
+        start_at_index = -1
+    try:
+        start_at_time = str(form.getvalue('start_at_time','1700-01-01 15:42'))
+    except:
+        start_at_time = '1700-01-01 15:42'
     try:
         stream = int(form.getvalue('stream',0))
     except:
@@ -151,11 +159,11 @@ if __name__ == "__main__":
         sys.stdout.flush()
         submit_src="http://www.noah.org/cgi-bin/mjpeg_player.py"
 #        submit_src= f"{base_URL}?stream=1&image_file_dir={image_file_dir}&start_at={start_at}&max_FPS={max_FPS}"
-        page_string = render_main_page(submit_src, image_file_dir, max_FPS, start_at)
+        page_string = render_main_page(submit_src, image_file_dir, max_FPS, start_at, start_at_index, urllib.parse.quote_plus(start_at_time),start_at_time)
         sys.stdout.buffer.write(page_string.encode())
         sys.exit(0)
 
-    # Stream the video directory..
+    # Stream the video directory.
     # Some sources say to include '--' in the boundry definition in the Content-Type header.
     # Other sources say not to include this. Both seem to work. It seems more correct to not include here.
     sys.stdout.buffer.write (b'Content-Type: multipart/x-mixed-replace; boundary="jpegboundary"\r\n')
