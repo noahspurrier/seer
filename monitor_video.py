@@ -86,8 +86,8 @@ import datetime
 
 
 def main(argv):
-    camera_width = 640
-    camera_height = 480
+    camera_width = 1280
+    camera_height = 720
 
     if len(argv) > 1:
         camera_number = int(argv[1])
@@ -100,14 +100,14 @@ def main(argv):
     cam.set(cv2.CAP_PROP_FRAME_HEIGHT,camera_height)
     WindowName = "Monitor Camera: %d" % (camera_number)
     cv2.namedWindow(WindowName,cv2.WINDOW_NORMAL)
-    if camera_number%4 == 0:
-        cv2.moveWindow(WindowName,0,0)
-    elif camera_number%4 == 1:
-        cv2.moveWindow(WindowName,camera_width+5,0)
-    elif camera_number%4 == 2:
-        cv2.moveWindow(WindowName,0,camera_height+10)
-    elif camera_number%4 == 3:
-        cv2.moveWindow(WindowName,camera_width+5,camera_height+10)
+#    if camera_number%4 == 0:
+#        cv2.moveWindow(WindowName,0,0)
+#    elif camera_number%4 == 1:
+#        cv2.moveWindow(WindowName,camera_width+5,0)
+#    elif camera_number%4 == 2:
+#        cv2.moveWindow(WindowName,0,camera_height+10)
+#    elif camera_number%4 == 3:
+#        cv2.moveWindow(WindowName,camera_width+5,camera_height+10)
 
     CAMERA_DIR = "MONITOR" # % camera_number
 
