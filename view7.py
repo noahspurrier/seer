@@ -65,7 +65,7 @@ def main (argv):
     image_path_list = sorted(image_path_list)
 
     WindowName="Main View"
-    cv2.namedWindow(WindowName, cv2.WINDOW_NORMAL)
+    cv2.namedWindow(WindowName, cv2.WINDOW_KEEPRATIO)
     cv2.moveWindow(WindowName,10,10)
     # These two lines will force window to be on top with focus.
     cv2.setWindowProperty(WindowName,cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
@@ -99,7 +99,7 @@ def main (argv):
             cv2.imshow(WindowName,img)
 
         show_status(index,len(image_path_list)-1,percent,filename,disposition,step,play_speed,pause_flag)
-        label_text = "delta:%3d%% %s" % (int(delta_factor * 100), output_filename_frame)
+        label_text = "percent:%3d%% %s" % (int(percent), filename)
         label_ul = (5, 15)
         label_text_ul = (7, 15)
         label_size = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_PLAIN, 1.0, 1)[0]
@@ -111,7 +111,7 @@ def main (argv):
             label_text_ul,
             cv2.FONT_HERSHEY_PLAIN,
             1.0,
-            (255, 255, 255),
+            (0, 0, 0),
         )
         #    cv2.putText(delta_view, label_text, label_text_ul, cv2.FONT_HERSHEY_PLAIN, 0.75, (255,255,255))
         cv2.imshow(WindowName, img)
