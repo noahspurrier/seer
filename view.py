@@ -5,6 +5,8 @@ import numpy
 import os
 import os.path
 import sys
+import time
+import datetime
 
 
 def show_status(dataset_index,dataset_size,percent,filename,disposition,step,play_speed,pause_flag):
@@ -95,6 +97,21 @@ def main (argv):
                 img=cv2.rotate(img, cv2.ROTATE_180)
             elif turn == 3:
                 img=cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
+            label_text = "%s"%(filename)
+            label_ul = (0, 11)
+            label_text_ul = (2, 10)
+            label_size = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_PLAIN, 1.0, 1)[0]
+            label_lr = (label_ul[0] + int(label_size[0]*0.8) + 2, label_ul[1] - label_size[1] - 1)
+            cv2.rectangle(img, label_ul, label_lr, (0, 0, 0), -1)
+            cv2.putText(
+                img,
+                label_text,
+                label_text_ul,
+                cv2.FONT_HERSHEY_PLAIN,
+                0.8,
+                (255, 255, 255),
+            )
             cv2.imshow(WindowName,img)
 
         show_status(index,len(image_path_list)-1,percent,filename,disposition,step,play_speed,pause_flag)
